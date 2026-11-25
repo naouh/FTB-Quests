@@ -4,7 +4,8 @@ plugins {
 
 neoForge {
 	version = project.neoforge_version
-//    accessTransformers = project.files('src/main/resources/META-INF/accesstransformer.cfg')
+	// ultimateneo: fail the build if an AT entry no longer matches 26.3
+	validateAccessTransformers = true
 
 	mods {
 		"${mod_id}" {
@@ -39,6 +40,20 @@ neoForge {
 		}
 	}
 }
+
+// ultimateneo: load an external quest book in the dev server/client:
+//   gradlew :neoforge:runServer -PquestsDir=C:/path/to/quests
+// replaces run/config/ftbquests/quests with the contents of that folder before the run starts.
+if (project.hasProperty('questsDir')) {
+	def syncQuests = tasks.register('syncQuestsDir', Sync) {
+		from project.property('questsDir')
+		into project.file('run/config/ftbquests/quests')
+	}
+	tasks.matching { it.name in ['runServer', 'runClient'] }.configureEach { dependsOn syncQuests }
+}
+
+// ultimateneo: forward stdin to the dev server so console commands (e.g. "stop") work
+tasks.matching { it.name == 'runServer' }.configureEach { standardInput = System.in }
 
 sourceSets {
 	test {

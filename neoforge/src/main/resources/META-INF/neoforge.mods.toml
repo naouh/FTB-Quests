@@ -32,14 +32,14 @@ side = "BOTH"
 [[dependencies.ftbquests]]
 modId = "ftblibrary"
 type = "required"
-versionRange = "[${ftblibraryversion},)"
+versionRange = "${ftblibraryversionrange}"
 ordering = "AFTER"
 side = "BOTH"
 
 [[dependencies.ftbquests]]
 modId = "ftbteams"
 type = "required"
-versionRange = "[${ftbteamsversion},)"
+versionRange = "${ftbteamsversionrange}"
 ordering = "AFTER"
 side = "BOTH"
 

@@ -1,22 +1,15 @@
 plugins {
-	id 'net.fabricmc.fabric-loom'
+	id 'net.neoforged.moddev'
 }
 
-loom {
-
-	accessWidenerPath = project(":common").file("src/main/resources/${project.mod_id}.accesswidener")
-
-	mixin {
-		useLegacyMixinAp = false
-	}
+// ultimateneo: common is compiled against the NeoForge-patched Minecraft with ModDevGradle
+// (previously Fabric Loom). The access widener entries are mirrored by the NeoForge AT.
+neoForge {
+	version = project.neoforge_version
+	accessTransformers.from(rootProject.file('neoforge/src/main/resources/META-INF/accesstransformer.cfg'))
 }
 
 dependencies {
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-
-	compileOnly "net.fabricmc:sponge-mixin:0.17.0+mixin.0.8.7"
-	compileOnly "io.github.llamalad7:mixinextras-fabric:0.5.0"
-
 	implementation("dev.ftb.mods:ftb-library:${rootProject.ftb_library_version}")
 	implementation("dev.ftb.mods:ftb-teams:${rootProject.ftb_teams_version}")
 }
