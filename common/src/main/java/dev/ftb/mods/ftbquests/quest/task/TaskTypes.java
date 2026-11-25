@@ -55,6 +55,9 @@ public interface TaskTypes {
 					.combineWith(Icon.getIcon(FluidTask.TANK_TEXTURE.toString())));
 	TaskType INTERACTION = TaskTypes.register(FTBQuestsAPI.id("interaction"), InteractionTask::new,
 			() -> ItemIcon.ofItem(Items.DIAMOND_PICKAXE));
+	// Ultimate Neo: "store N in a Deep Storage Unit" (the user's 1.4.7 QuestCycle dsu_named task)
+	TaskType DEEP_STORAGE = TaskTypes.register(FTBQuestsAPI.id("deep_storage"), DeepStorageTask::new,
+			() -> ItemIcon.ofItem(Items.CHEST));
 
 	static void init() {
 	}

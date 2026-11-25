@@ -41,6 +41,8 @@ public class FTBQuestsEventHandler {
 			ServerQuestFile.getInstance().collect(DimensionTask.class));
 	private final Lazy<List<InteractionTask>> interactionTasks = Lazy.of(() ->
 			ServerQuestFile.getInstance().collect(InteractionTask.class));
+	private final Lazy<List<DeepStorageTask>> deepStorageTasks = Lazy.of(() ->
+			ServerQuestFile.getInstance().collect(DeepStorageTask.class));
 	private final Lazy<List<Task>> autoSubmitTasks = Lazy.of(() ->
 			ServerQuestFile.getInstance().collect(Task.class, t -> t.autoSubmitOnPlayerTick() > 0));
 
@@ -76,6 +78,7 @@ public class FTBQuestsEventHandler {
 		killTasks.invalidate();
 		dimensionTasks.invalidate();
 		interactionTasks.invalidate();
+		deepStorageTasks.invalidate();
 		autoSubmitTasks.invalidate();
 	}
 
@@ -128,6 +131,20 @@ public class FTBQuestsEventHandler {
 	}
 
 	private InteractionResult playerInteract(Player player, Either<BlockPos, Entity> either) {
+		// Ultimate Neo: Deep Storage Unit goals are checked when a player right-clicks the unit
+		if (!player.level().isClientSide() && !Platform.get().misc().isFakePlayer(player) && either.left().isPresent()
+				&& !deepStorageTasks.get().isEmpty()) {
+			BlockPos pos = either.left().get();
+			if (!DeepStorageTask.storedIn(player.level().getBlockEntity(pos)).isEmpty()) {
+				ServerQuestFile.ifExists(sqf -> sqf.getTeamData(player).ifPresent(data -> {
+					for (var task : deepStorageTasks.get()) {
+						if (data.getProgress(task) < task.getMaxProgress() && data.canStartTasks(task.getQuest())) {
+							task.interacted(data, player.level(), pos);
+						}
+					}
+				}));
+			}
+		}
 		if (!player.level().isClientSide() && !Platform.get().misc().isFakePlayer(player) && !interactionTasks.get().isEmpty()) {
 			ServerQuestFile.ifExists(sqf -> sqf.getTeamData(player).ifPresent(data -> {
 				for (var task : interactionTasks.get()) {

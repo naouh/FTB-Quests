@@ -524,6 +524,8 @@
 	"ftbquests.task.ftbquests.observation.observe_type": "Type",
 	"ftbquests.task.ftbquests.observation.to_observe": "Observe",
 	"ftbquests.task.ftbquests.observation.to_observe.tooltip": "ID of the block, block entity, or entity to observe, or a block or entity tag\nFor block entities and entities, NBT may be optionally appended for a fuzzy match, e.g.\nminecraft:sheep{Color: 4b} - a yellow sheep\nImportant: NBT to be matched must be sync'd to the client by the server-side entity!",
+	"ftbquests.task.ftbquests.deep_storage": "Deep Storage Unit",
+	"ftbquests.task.ftbquests.deep_storage.title": "Store %sx %s in a Deep Storage Unit",
 	"ftbquests.task.ftbquests.interaction": "Interaction",
 	"ftbquests.task.ftbquests.interaction.type": "Type",
 	"ftbquests.task.ftbquests.interaction.match": "Match",
