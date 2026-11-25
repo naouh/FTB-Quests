@@ -14,13 +14,20 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class NetUtils {
+	// 26.3: FriendlyByteBuf#writeCollection/readList were removed; same wire format (VarInt size + elements)
 	public static <T> void write(FriendlyByteBuf buffer, Collection<T> list, BiConsumer<FriendlyByteBuf, T> writer) {
-		buffer.writeCollection(list, writer::accept);
+		buffer.writeVarInt(list.size());
+		for (T t : list) {
+			writer.accept(buffer, t);
+		}
 	}
 
 	public static <T> void read(FriendlyByteBuf buffer, Collection<T> list, Function<FriendlyByteBuf, T> reader) {
 		list.clear();
-		list.addAll(buffer.readList(reader::apply));
+		int size = buffer.readVarInt();
+		for (int i = 0; i < size; i++) {
+			list.add(reader.apply(buffer));
+		}
 	}
 
 	public static void writeStrings(FriendlyByteBuf buffer, Collection<String> list) {

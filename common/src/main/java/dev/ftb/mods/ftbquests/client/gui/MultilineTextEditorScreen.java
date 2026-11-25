@@ -436,7 +436,8 @@ public class MultilineTextEditorScreen extends BaseScreen {
 	}
 
 	private void insertFormatting(ChatFormatting c) {
-		insertFormatting(String.valueOf(c.getChar()));
+		// 26.3: ChatFormatting#getChar was removed; toString() is the section sign followed by the code char
+		insertFormatting(c.toString().substring(1));
 	}
 
 	private void insertFormatting(EditableColor color) {
@@ -630,8 +631,10 @@ public class MultilineTextEditorScreen extends BaseScreen {
 			List<ContextMenuItem> items = new ArrayList<>();
 
 			for (ChatFormatting cf : ChatFormatting.values()) {
-				if (cf.getColor() != null) {
-					items.add(new ContextMenuItem(Component.empty(), Color4I.rgb(cf.getColor()), _ -> insertFormatting(cf)));
+				// 26.3: ChatFormatting no longer carries colours; TextColor maps the legacy colour codes
+				var tc = net.minecraft.network.chat.TextColor.fromLegacyFormat(cf);
+				if (tc != null) {
+					items.add(new ContextMenuItem(Component.empty(), Color4I.rgb(tc.getValue()), _ -> insertFormatting(cf)));
 				}
 			}
 

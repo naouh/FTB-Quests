@@ -5,6 +5,7 @@ import dev.ftb.mods.ftbquests.api.FTBQuestsAPI;
 import dev.ftb.mods.ftbquests.quest.ServerQuestFile;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import net.minecraft.util.Prediction;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -35,7 +36,7 @@ public record GetEmergencyItemsMessage() implements CustomPacketPayload {
 
 			if (delta >= sqf.getEmergencyItemsCooldown() * 1000L) {
 				ServerQuestFile.getInstance().getEmergencyItems()
-						.forEach(stack -> player.getInventory().placeItemBackInInventory(stack.copy()));
+						.forEach(stack -> player.getInventory().placeItemBackInInventory(stack.copy(), Prediction.SERVER_ONLY));
 				lastItemsGot.put(player.getUUID(), now);
 			}
 		});

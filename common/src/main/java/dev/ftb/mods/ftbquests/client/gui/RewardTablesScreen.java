@@ -1,5 +1,6 @@
 package dev.ftb.mods.ftbquests.client.gui;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import dev.ftb.mods.ftblibrary.client.config.editable.EditableString;
 import dev.ftb.mods.ftblibrary.client.config.gui.EditStringConfigOverlay;
 import dev.ftb.mods.ftblibrary.client.gui.input.Key;
@@ -34,7 +35,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.Items;
 import org.apache.commons.lang3.mutable.MutableInt;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -296,7 +296,7 @@ public class RewardTablesScreen extends AbstractButtonListScreen {
 		public void addMouseOverText(TooltipList list) {
 			super.addMouseOverText(list);
 
-			if (isKeyDown(GLFW.GLFW_KEY_F1) || isShiftKeyDown() && isCtrlKeyDown()) {
+			if (isKeyDown(InputConstants.KEY_F1) || isShiftKeyDown() && isCtrlKeyDown()) {
 				list.add(Component.literal(table.getCodeString()).withStyle(ChatFormatting.DARK_GRAY));
 			}
 

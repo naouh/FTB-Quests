@@ -47,6 +47,7 @@ import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
+import io.netty.buffer.ByteBuf;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -855,7 +856,8 @@ public abstract class BaseQuestFile extends QuestObject implements QuestFile {
 		ItemStack.OPTIONAL_STREAM_CODEC.apply(ByteBufCodecs.list()).encode(buffer, emergencyItems);
 		buffer.writeVarInt(emergencyItemsCooldown);
 		buffer.writeBoolean(defaultPerTeamReward);
-		buffer.writeMap(defaultPerTeamRewardByType, Identifier.STREAM_CODEC, ByteBufCodecs.BOOL);
+		// 26.3: FriendlyByteBuf#writeMap was removed; same wire format (VarInt size + key/value pairs)
+		ByteBufCodecs.<ByteBuf, Identifier, Boolean, Map<Identifier, Boolean>>map(HashMap::new, Identifier.STREAM_CODEC, ByteBufCodecs.BOOL).encode(buffer, defaultPerTeamRewardByType);
 		buffer.writeBoolean(defaultTeamConsumeItems);
 		RewardAutoClaim.NAME_MAP_NO_DEFAULT.write(buffer, defaultRewardAutoClaim);
 		buffer.writeUtf(defaultQuestShape, Short.MAX_VALUE);
@@ -885,7 +887,7 @@ public abstract class BaseQuestFile extends QuestObject implements QuestFile {
 		emergencyItemsCooldown = Math.max(buffer.readVarInt(), 0);
 		defaultPerTeamReward = buffer.readBoolean();
 		defaultPerTeamRewardByType.clear();
-		defaultPerTeamRewardByType.putAll(buffer.readMap(Identifier.STREAM_CODEC, ByteBufCodecs.BOOL));
+		defaultPerTeamRewardByType.putAll(ByteBufCodecs.<ByteBuf, Identifier, Boolean, Map<Identifier, Boolean>>map(HashMap::new, Identifier.STREAM_CODEC, ByteBufCodecs.BOOL).decode(buffer));
 		defaultTeamConsumeItems = buffer.readBoolean();
 		defaultRewardAutoClaim = RewardAutoClaim.NAME_MAP_NO_DEFAULT.read(buffer);
 		defaultQuestShape = buffer.readUtf(Short.MAX_VALUE);

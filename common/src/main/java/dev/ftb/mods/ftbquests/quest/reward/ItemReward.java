@@ -14,6 +14,7 @@ import dev.ftb.mods.ftbquests.net.NotifyItemRewardMessage;
 import dev.ftb.mods.ftbquests.quest.Quest;
 import dev.ftb.mods.ftbquests.registry.ModItems;
 import io.netty.handler.codec.EncoderException;
+import net.minecraft.util.Prediction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -142,7 +143,7 @@ public class ItemReward extends Reward {
 			return false;
 		}
 
-		processItems(size, stack -> player.getInventory().placeItemBackInInventory(stack));
+		processItems(size, stack -> player.getInventory().placeItemBackInInventory(stack, Prediction.SERVER_ONLY));
 
 		if (notify) {
 			Server2PlayNetworking.send(player, new NotifyItemRewardMessage(item, size, disableRewardScreenBlur));

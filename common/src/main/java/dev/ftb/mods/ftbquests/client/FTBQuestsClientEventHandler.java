@@ -19,7 +19,6 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -103,9 +102,9 @@ public class FTBQuestsClientEventHandler {
             // also save the cursor position and restore it after, since closing the screen will reset to the centre
             double mx = Minecraft.getInstance().mouseHandler.xpos();
             double my = Minecraft.getInstance().mouseHandler.ypos();
-            Minecraft.getInstance().setScreen(null);
+            Minecraft.getInstance().gui.setScreen(null);
             if (ClientQuestFile.openGui() != null) {
-                InputConstants.grabOrReleaseMouse(Minecraft.getInstance().getWindow(), GLFW.GLFW_CURSOR_NORMAL, mx, my);
+                InputConstants.releaseMouse(Minecraft.getInstance().getWindow(), mx, my);
             }
             return true;
         }

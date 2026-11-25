@@ -36,10 +36,9 @@ public class FTBQCodecs {
     public static final Codec<LongSet> LONG_SET_CODEC
             = Codec.LONG.listOf().xmap(LongOpenHashSet::new, LongArrayList::new);
 
-    public static final StreamCodec<FriendlyByteBuf, LongSet> LONG_SET_STREAM_CODEC = StreamCodec.of(
-            (output, value) -> output.writeCollection(value, FriendlyByteBuf::writeLong),
-            input -> input.readCollection(LongOpenHashSet::new, FriendlyByteBuf::readLong)
-    );
+    // 26.3: FriendlyByteBuf#writeCollection/readCollection were removed; same wire format (VarInt size + longs)
+    public static final StreamCodec<FriendlyByteBuf, LongSet> LONG_SET_STREAM_CODEC
+            = ByteBufCodecs.<FriendlyByteBuf, Long, LongSet>collection(LongOpenHashSet::new, ByteBufCodecs.LONG);
 
     public static final StreamCodec<ByteBuf, List<Long>> LONG_LIST_STREAM_CODEC
             = ByteBufCodecs.LONG.apply(ByteBufCodecs.list());

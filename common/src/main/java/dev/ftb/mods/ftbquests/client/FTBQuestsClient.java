@@ -28,6 +28,7 @@ import dev.ftb.mods.ftbquests.quest.QuestObject;
 import dev.ftb.mods.ftbquests.quest.QuestObjectBase;
 import dev.ftb.mods.ftbquests.quest.TeamData;
 import dev.ftb.mods.ftbquests.quest.theme.ThemeLoader;
+import com.mojang.blaze3d.Blaze3D;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.ConfirmLinkScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -113,7 +114,7 @@ public class FTBQuestsClient {
 					Play2ServerNetworking.send(new SetCustomImageMessage(hand, true, BuiltInRegistries.ENTITY_TYPE.getKey(et)));
 				}
 			}
-			Minecraft.getInstance().setScreen(null);
+			Minecraft.getInstance().gui.setScreen(null);
 		});
 	}
 
@@ -185,13 +186,13 @@ public class FTBQuestsClient {
 	}
 
 	static void showCompletionToast(QuestObject qo) {
-		Minecraft.getInstance().getToastManager().addToast(new ToastQuestObject(qo));
+		Minecraft.getInstance().gui.toastManager().addToast(new ToastQuestObject(qo));
 	}
 
 	static void showRewardToast(Component text, Icon<?> icon) {
-		Screen screen = Minecraft.getInstance().screen;
+		Screen screen = Minecraft.getInstance().gui.screen();
 		if (screen == null || ClientUtils.getGuiAs(screen, RewardSelectorScreen.class) == null) {
-			Minecraft.getInstance().getToastManager().addToast(new RewardToast(text, icon));
+			Minecraft.getInstance().gui.toastManager().addToast(new RewardToast(text, icon));
 		}
 	}
 
@@ -208,21 +209,21 @@ public class FTBQuestsClient {
 	}
 
 	public static void showInfoToast(Component text, Icon<?> icon, Component desc) {
-		Minecraft.getInstance().getToastManager().addToast(new CustomToast(text, icon, desc));
+		Minecraft.getInstance().gui.toastManager().addToast(new CustomToast(text, icon, desc));
 	}
 
 	public static void openUri(String uriStr) {
 		URI uri = URI.create(uriStr);
 		if (Minecraft.getInstance().options.chatLinksPrompt().get()) {
-			final var currentScreen = Minecraft.getInstance().screen;
-			Minecraft.getInstance().setScreen(new ConfirmLinkScreen(accepted -> {
+			final var currentScreen = Minecraft.getInstance().gui.screen();
+			Minecraft.getInstance().gui.setScreen(new ConfirmLinkScreen(accepted -> {
 				if (accepted) {
-					Util.getPlatform().openUri(uri);
+					Blaze3D.openUri(uri);
 				}
-				Minecraft.getInstance().setScreen(currentScreen);
-			}, uriStr, false));
+				Minecraft.getInstance().gui.setScreen(currentScreen);
+			}, uri, false));
 		} else {
-			Util.getPlatform().openUri(uri);
+			Blaze3D.openUri(uri);
 		}
 	}
 
